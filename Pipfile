@@ -9,6 +9,7 @@ mysql-connector-python = "*"
 flake8 = "*"
 flake8-html = "*"
 pytest = "*"
+sentry-sdk = "*"
 
 [dev-packages]
 
