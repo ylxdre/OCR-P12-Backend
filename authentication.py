@@ -38,15 +38,6 @@ class PasswordTools:
         return {'message': "Wrong username"}
 
     def check(self, username: str, password: str) -> bool:
-        # if self.db.scalars(
-        #         select(Collaborator).filter_by(name=username)).all():
-        #     sbq = select(Collaborator).where(
-        #         Collaborator.name == username).subquery()
-        #     stmt = select(Credentials).join(
-        #         sbq,
-        #         Credentials.collaborator_id == sbq.c.id)
-        #     result = self.db.scalars(stmt).all()
-        #     user_pw = result[0].password_hash
         user = self.get_by_name(username)
         if not user:
             print("Wrong user")
