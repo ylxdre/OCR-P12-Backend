@@ -43,12 +43,10 @@ class App:
                 return perm, user_id
             else:
                 self.view.display_co_failed()
-                return None
+                quit()
 
     def start(self):
         team, user_id = self.connect()
-        if not user_id:
-            exit()
         if team == 1:
             CommercialMenu(self.customer_tools,
                            self.contract_tools,

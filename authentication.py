@@ -39,9 +39,6 @@ class PasswordTools:
 
     def check(self, username: str, password: str) -> bool:
         user = self.get_by_name(username)
-        if not user:
-            print("Wrong user")
-            return False
         user_pw = user.password_hash
         return argon2.verify(password, user_pw)
 
