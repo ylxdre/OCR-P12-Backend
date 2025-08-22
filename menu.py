@@ -262,7 +262,7 @@ class ManagementMenu:
         self.prompt.exec_menu(event_list_options)
 
     def event_no_support(self):
-        self.event_tools.filter("support_id", "NULL")
+        self.event_tools.filter("support_id", None)
 
     def event_menu(self):
         event_options = {"List": self.event_list,
