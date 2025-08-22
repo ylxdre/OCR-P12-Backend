@@ -6,7 +6,6 @@ from views import View
 from authentication import PasswordTools
 
 
-models.Base.metadata.create_all(bind=engine)
 
 
 def main():
@@ -29,4 +28,5 @@ def main():
 
 
 if __name__ == "__main__":
+    models.Base.metadata.create_all(bind=engine)
     main()
