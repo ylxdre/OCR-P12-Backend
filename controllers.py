@@ -33,13 +33,17 @@ class App:
         :return: tuple(team_id:int, user_id:int) | None and print if no match
         """
         username, password = self.view.prompt_connect()
-        if self.passwd_tools.check(username, password):
-            perm = self.collaborator_tools.get_team_by_name(username)
-            user_id = self.collaborator_tools.get_id_by_name(username)
-            return perm, user_id
+        if not self.collaborator_tools.get_id_by_name(username):
+            self.view.display_no_user()
+            quit()
         else:
-            print("Connection failed")
-            return None
+            if self.passwd_tools.check(username, password):
+                perm = self.collaborator_tools.get_team_by_name(username)
+                user_id = self.collaborator_tools.get_id_by_name(username)
+                return perm, user_id
+            else:
+                self.view.display_co_failed()
+                return None
 
     def start(self):
         team, user_id = self.connect()
