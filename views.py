@@ -135,5 +135,11 @@ class View:
     def display_error(self):
         print("No object matches this query")
 
+    def display_no_user(self):
+        print("This user doesn't exist")
+
+    def display_co_failed(self):
+        print("Connexion failed.")
+
     def display_items(self):
         print()

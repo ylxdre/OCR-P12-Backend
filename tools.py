@@ -7,20 +7,38 @@ from sqlalchemy import select, update, insert, delete
 
 
 class Tools:
+    """
+    Generic tools with object as an arg
+    """
     def __init__(self, db: Session):
         self.db = db
         self.view = View()
 
     def list(self, object):
+        """
+        Select all objects from DB and return the list
+        :param object: object in Collaborator, Customer, Contract, Event
+        :return: list of object
+        """
         while self.db:
             return self.db.execute(select(object)).all()
 
     def filter(self, object, filter):
+        """
+        Select objects from DB where filter and return the list
+        :param object: object in Collaborator, Customer, Contract, Event
+        :param filter: (attribute, value):tuple
+        :return: list of selected object matching filter
+        """
         item, value = filter
         stmt = (select(object).where(**{item: value}))
-        print(stmt)
-        # while self.db:
-        #     return self.db.execute(select(object).where(**{item: value})).all()
+        while self.db:
+            result = self.db.execute(
+                select(object).where(**{item: value})).all()
+            if not result:
+                self.view.display_error()
+            self.view.display_results(result)
+
 
 class CollaboratorTools:
     """
@@ -34,6 +52,8 @@ class CollaboratorTools:
     def get_id_by_name(self, username):
         collaborator = self.db.execute(
             select(Collaborator).where(Collaborator.name == username)).scalar()
+        if not collaborator:
+            return None
         return collaborator.id
 
     def get_by_team_id(self, team_id):
@@ -111,7 +131,7 @@ class CollaboratorTools:
         ret = self.db.execute(
             select(Collaborator).where(Collaborator.name == username)).scalar()
         if ret is None:
-            print({'message': "This username doesn't exist"})
+            self.view.display_error()
             return ret
         else:
             return ret.team_id
@@ -190,10 +210,12 @@ class CustomerTools:
             ret = self.db.execute(
                 select(Customer).where(Customer.commercial_id == my_id)).all()
             if ret is None:
-                print({'message': "No customer found"})
+                # print({'message': "No customer found"})
+                self.view.display_error()
             return ret
         else:
-            print({'message': "No commercial with this id"})
+            # print({'message': "No commercial with this id"})
+            self.view.display_error()
             return None
 
 
@@ -310,8 +332,10 @@ class EventTools:
         """
         result = self.db.execute(
             select(Event).filter_by(**{field: value})).all()
-        print(field, value, result)
-        self.view.display_results(result)
+        if not result:
+            self.view.display_error()
+        else:
+            self.view.display_results(result)
 
     def filter_owned(self, user_id):
         """
