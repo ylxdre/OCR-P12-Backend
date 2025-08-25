@@ -78,11 +78,13 @@ class View:
                    }
         return self.prompt_for_update(options)
 
-    def prompt_for_contract(self) -> dict:
+    def prompt_for_contract(self, customer_options, commercial_options) -> dict:
         contract = {}
         print("** New contract **")
-        contract['customer'] = input("Customer (id) ? : ")
-        contract['commercial'] = input("Commercial (id) ")
+        print("Customer ? :")
+        contract['customer'] = return_menu(customer_options)
+        print("Commercial ? :")
+        contract['commercial'] = return_menu(commercial_options)
         contract['amount'] = input("Budget ? : ")
         return contract
 

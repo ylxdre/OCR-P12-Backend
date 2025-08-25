@@ -4,6 +4,8 @@ from authentication import PasswordTools
 from views import View
 from sqlalchemy.orm import Session
 from sqlalchemy import select, update, insert, delete
+from datetime import datetime, date
+
 
 
 class Tools:
@@ -159,7 +161,7 @@ class CustomerTools:
         self.view.display_results(result)
         return result
 
-    def create(self) -> None:
+    def create(self, user_id) -> None:
         """
         Create a new customer with minimum information
         :return: None; creates object in DB
@@ -170,6 +172,7 @@ class CustomerTools:
                                 email=customer['email'],
                                 phone=customer['phone'],
                                 company=customer['company'],
+                                commercial_id=user_id,
                                 )
         self.db.add(new_customer)
         self.db.commit()
@@ -184,7 +187,7 @@ class CustomerTools:
         cust = self.db.get(Customer, my_id)
         item, value = self.view.prompt_for_customer_update()
         stmt = (update(Customer).where(Customer.id == my_id).values(
-            **{item: value}))
+            **{item: value}, last_update=datetime.now()))
         self.db.execute(stmt)
         self.db.commit()
         self.view.display_change(cust.name, item, value)
@@ -253,15 +256,20 @@ class ContractTools:
             select(Contract).where(Contract.signed == 0))
         self.view.display_results(result)
 
-    def create(self) -> None:
+    def create(self,
+               customer_options,
+               commercial_options) -> None:
         """
         Create a new contracts with minimum information
         :return: None; creates object in DB
         """
-        contract = self.view.prompt_for_contract()
+        contract = self.view.prompt_for_contract(customer_options,
+                                                 commercial_options)
+        if not contract['amount']:
+            contract['amount'] = 0
         new_contract = Contract(
-            customer=contract['customer'],
-            commercial=contract['commercial'],
+            customer_id=contract['customer'],
+            commercial_id=contract['commercial'],
             amount=contract['amount'],
         )
         self.db.add(new_contract)
