@@ -31,11 +31,17 @@ class CommercialMenu:
     filter :
         contract: signed
     """
-    def __init__(self, customer_tools, contract_tools, event_tools, tools):
+    def __init__(self,
+                 customer_tools,
+                 contract_tools,
+                 event_tools,
+                 tools,
+                 user_id):
         self.customer_tools = customer_tools
         self.contract_tools = contract_tools
         self.event_tools = event_tools
         self.tools = tools
+        self.user_id = user_id
         self.prompt = Prompt()
 
     def launch(self):
@@ -59,10 +65,14 @@ class CommercialMenu:
         :return: exec the update tool with the chosen id
         """
         options = {}
-        for item in self.tools.list(Customer):
+        for item in self.tools.filter(Customer,
+                                      ("commercial_id", self.user_id)):
             options[item[0].name] = item[0].id
         choice = self.prompt.return_menu(options)
         self.customer_tools.update(choice)
+
+    def customer_to_create(self):
+        self.customer_tools.create(self.user_id)
 
     def customer_menu(self):
         """
@@ -71,7 +81,7 @@ class CommercialMenu:
         """
         customer_options = {
             "List": self.customer_tools.list,
-            "Create": self.customer_tools.create,
+            "Create": self.customer_to_create,
             "Update": self.customers_for_update,
             "Delete": self.customer_tools.delete,
         }
@@ -84,7 +94,7 @@ class CommercialMenu:
         :return: exec the update tool with the chosen id
         """
         options = {}
-        for item in self.tools.list(Contract):
+        for item in self.tools.filter(Contract, ("commercial_id", self.user_id)):
             options["Contrat "+str(item[0].id)] = item[0].id
         choice = self.prompt.return_menu(options)
         self.contract_tools.update(choice)
@@ -138,12 +148,15 @@ class ManagementMenu:
     def __init__(self, collaborator_tools,
                  customer_tools,
                  contract_tools,
-                 event_tools, tools):
+                 event_tools,
+                 tools, user_id):
         self.collaborator_tools = collaborator_tools
         self.customer_tools = customer_tools
         self.contract_tools = contract_tools
         self.event_tools = event_tools
         self.tools = tools
+        self.user_id = user_id
+
         self.prompt = Prompt()
 
     def launch(self):
@@ -225,13 +238,24 @@ class ManagementMenu:
         self.contract_tools.update(choice, customer_options,
                                    commercial_options, event_options)
 
+    def contract_to_create(self):
+        (customer_options,
+         commercial_options,
+         event_options) = {}, {}, {}
+        commercial = self.collaborator_tools.get_by_team_id(1)
+        for customer in self.tools.list(Customer):
+            customer_options[customer[0].name] = customer[0].id
+        for user in commercial:
+            commercial_options[user[0].name] = user[0].id
+        self.contract_tools.create(customer_options, commercial_options)
+
     def contract_menu(self):
         """
         display the CRUD menu for contract and get choice
         :return: exec the function associated with chosen item
         """
         contract_options = {"List": self.contract_tools.list,
-                            "Create": self.contract_tools.create,
+                            "Create": self.contract_to_create,
                             "Update": self.contracts_for_update,
                             }
         self.prompt.exec_menu(contract_options)

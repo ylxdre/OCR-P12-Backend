@@ -51,14 +51,16 @@ class App:
             CommercialMenu(self.customer_tools,
                            self.contract_tools,
                            self.event_tools,
-                           self.tools).launch()
+                           self.tools,
+                           user_id).launch()
 
         if team == 2:
             ManagementMenu(self.collaborator_tools,
                            self.customer_tools,
                            self.contract_tools,
                            self.event_tools,
-                           self.tools).launch()
+                           self.tools,
+                           user_id).launch()
 
         if team == 3:
             SupportMenu(self.customer_tools,
