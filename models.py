@@ -59,8 +59,10 @@ class Customer(Base):
     email: Mapped[str] = mapped_column(String(20))
     phone: Mapped[int] = mapped_column(Integer)
     company: Mapped[str] = mapped_column(String(40))
-    creation_date: Mapped[date] = mapped_column(Date,
-                                                server_default=func.now())
+    creation_date: Mapped[date] = mapped_column(DateTime,
+                                                default=datetime.now())
+    # creation_date: Mapped[date] = mapped_column(Date,
+    #                                             server_default=func.now())
     last_update: Mapped[Optional[datetime]] = mapped_column(DateTime)
     commercial_id: Mapped[Optional[int]] = mapped_column(
         ForeignKey("collaborator.id"))
@@ -82,6 +84,8 @@ class Contract(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     signed: Mapped[bool] = mapped_column(Boolean, default=False)
+    # creation_date: Mapped[date] = mapped_column(Date,
+    #                                             server_default=func.now())
     creation_date: Mapped[date] = mapped_column(Date,
                                                 server_default=func.now())
     amount: Mapped[int] = mapped_column(Integer)
