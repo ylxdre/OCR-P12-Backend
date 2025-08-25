@@ -5,10 +5,18 @@ from controllers import App
 from views import View
 from authentication import PasswordTools
 
-
+import sentry_sdk
+import config
 
 
 def main():
+    sentry_sdk.init(
+        dsn=config.sentry_url,
+        # Add data like request headers and IP for users,
+        # see https://docs.sentry.io/platforms/python/data-management/data-collected/ for more info
+        send_default_pii=True,
+    )
+
     view = View()
     collaborator_tools = tools.CollaboratorTools(session)
     customer_tools = tools.CustomerTools(session)
