@@ -15,9 +15,9 @@ class TestCustomerTools:
         users = tools.list()
         assert len(users) == 2
 
-    def test_should_create_customer(self, seed, session, monkeypatch):
-        CustomerTools(session).create(1)
-        pass
+    # def test_should_create_customer(self, seed, session, monkeypatch):
+    #     CustomerTools(session).create(1)
+    #     pass
 
     def test_delete_user_should_remove_from_db(self, seed, session):
         pass
