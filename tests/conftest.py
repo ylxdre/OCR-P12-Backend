@@ -41,6 +41,8 @@ def seed(session):
         [
             Collaborator(name="Col1", email="aa", phone=1, team_id=1),
             Collaborator(name="Col2", email="bb", phone=2, team_id=2),
+            Collaborator(name="Col3", email="cc", phone=3, team_id=3),
+            Collaborator(name="Col4", email="dd", phone=4, team_id=2),
         ]
     )
     # session.add_all(
