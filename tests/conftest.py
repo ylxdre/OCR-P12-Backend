@@ -10,7 +10,7 @@ engine = create_engine(DB_URL, echo=False)
 SessionLocal = sessionmaker(bind=engine)
 
 cust1 = ("Cust1", "aa", 11, "Cust1CO")
-cust2 =
+cust2 = ("Cust2", "bb", 22, "Cust2CO")
 
 @pytest.fixture
 def session():
@@ -31,7 +31,7 @@ def session():
 def seed(session):
     session.add_all(
         [
-            Customer(cust1),
+            Customer(name="Cust1", email="aa", phone=11, company="Cust1CO"),
             Customer(name="Cust2", email="bb", phone=22, company="Cust2CO"),
         ]
     )
