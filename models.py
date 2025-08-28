@@ -16,7 +16,12 @@ class Collaborator(Base):
     name: Mapped[str] = mapped_column(String(50))
     email: Mapped[str] = mapped_column(String(30))
     phone: Mapped[int] = mapped_column(Integer)
-    team_id: Mapped[Optional[int]] = mapped_column(ForeignKey("team.id"))
+    creation_date: Mapped[date] = mapped_column(DateTime,
+                                                default=datetime.now())
+    team_id: Mapped[Optional[int]] = mapped_column(
+        ForeignKey("team.id",
+                   use_alter=True,
+                   name="team"))
     team: Mapped["Team"] = relationship(back_populates="collaborator")
     customers: Mapped[Optional[list["Customer"]]] = relationship()
     contracts: Mapped[Optional[list["Contract"]]] = relationship()
@@ -38,7 +43,10 @@ class Credentials(Base):
     __tablename__ = "credentials"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    collaborator_id: Mapped[int] = mapped_column(ForeignKey("collaborator.id"))
+    collaborator_id: Mapped[int] = mapped_column(
+        ForeignKey("collaborator.id",
+                   use_alter=True,
+                   name="user"))
     password_hash: Mapped[str] = mapped_column(String(200))
 
 
@@ -65,7 +73,9 @@ class Customer(Base):
     #                                             server_default=func.now())
     last_update: Mapped[Optional[datetime]] = mapped_column(DateTime)
     commercial_id: Mapped[Optional[int]] = mapped_column(
-        ForeignKey("collaborator.id"))
+        ForeignKey("collaborator.id",
+                   use_alter=True,
+                   name="commercial"))
 
     def __repr__(self):
         return (f"Customer: (id={self.id!r}, "
@@ -90,10 +100,17 @@ class Contract(Base):
                                                 server_default=func.now())
     amount: Mapped[int] = mapped_column(Integer)
     customer_id: Mapped[Optional[int]] = mapped_column(
-        ForeignKey("customer.id"))
+        ForeignKey("customer.id",
+                   use_alter=True,
+                   name="customer_sponsor"))
     commercial_id: Mapped[Optional[int]] = mapped_column(
-        ForeignKey("collaborator.id"))
-    event_id: Mapped[Optional[int]] = mapped_column(ForeignKey("event.id"))
+        ForeignKey("collaborator.id",
+                   use_alter=True,
+                   name="commercial_referent"))
+    event_id: Mapped[Optional[int]] = mapped_column(
+        ForeignKey("event.id",
+                   use_alter=True,
+                   name="event",))
 
     def __repr__(self):
         return (f"Contract: (id={self.id!r}, "
@@ -112,9 +129,13 @@ class Event(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(200))
     contract_id: Mapped[Optional[int]] = mapped_column(
-        ForeignKey("contract.id"))
+        ForeignKey("contract.id",
+                   use_alter=True,
+                   name="customers_contract"))
     customer_id: Mapped[Optional[int]] = mapped_column(
-        ForeignKey("customer.id"))
+        ForeignKey("customer.id",
+                   use_alter=True,
+                   name="owner_customer"))
     customer_contact: Mapped[str] = mapped_column(String(30))
     date_start: Mapped[str] = mapped_column(String(30))
     date_end: Mapped[Optional[str]] = mapped_column(String(30))
@@ -122,7 +143,9 @@ class Event(Base):
     attendees: Mapped[Optional[set["Attendee"]]] = relationship(
         back_populates="event")
     support_id: Mapped[Optional[int]] = mapped_column(
-        ForeignKey("collaborator.id"))
+        ForeignKey("collaborator.id",
+                   use_alter=True,
+                   name="support_executive"))
 
     def __repr__(self):
         return (f"Event: (id={self.id!r}, "
@@ -142,6 +165,9 @@ class Attendee(Base):
     __tablename__ = "attendee"
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(50))
-    event_id: Mapped[Optional[int]] = mapped_column(ForeignKey("event.id"))
+    event_id: Mapped[Optional[int]] = mapped_column(
+        ForeignKey("event.id",
+                   use_alter=True,
+                   name="invited_to_event"))
     event: Mapped[Optional[set["Event"]]] = relationship(
         back_populates="attendees")
