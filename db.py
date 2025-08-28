@@ -1,10 +1,10 @@
 from sqlalchemy import create_engine
-from config import user1, pass1
+from config import USER, PASSWORD
 from sqlalchemy.orm import sessionmaker
-import os
 
-# DB_URL = os.getenv("DB_URL")
-DB_URL = "mysql+mysqlconnector://"+user1+":"+pass1+"@localhost:3306/prout"
+
+DB = "epicevents"
+DB_URL = "mysql+mysqlconnector://"+USER+":"+PASSWORD+"@localhost:3306/"+DB
 
 
 engine = create_engine(DB_URL, echo=False)
