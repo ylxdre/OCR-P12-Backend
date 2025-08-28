@@ -4,9 +4,11 @@ from db import engine, session
 from controllers import App
 from views import View
 from authentication import PasswordTools
+from initdb import init_test_db
 
 import sentry_sdk
 import config
+
 
 
 def main():
@@ -37,4 +39,5 @@ def main():
 
 if __name__ == "__main__":
     models.Base.metadata.create_all(bind=engine)
+    init_test_db(session)
     main()
