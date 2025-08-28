@@ -23,7 +23,10 @@ class Tools:
         :return: list of object
         """
         while self.db:
-            return self.db.execute(select(object)).all()
+            result =  self.db.execute(select(object)).all()
+            if result:
+                return result
+            return None
 
     def filter(self, object, filter):
         """

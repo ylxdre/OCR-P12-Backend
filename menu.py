@@ -16,8 +16,10 @@ class Prompt:
         selected_function()
 
     def return_menu(self, dict_options):
-        selection = self.menu(list(dict_options.keys()))
-        return dict_options.get(selection)
+        if dict_options:
+            selection = self.menu(list(dict_options.keys()))
+            return dict_options.get(selection)
+        return None
 
 
 
@@ -94,10 +96,12 @@ class CommercialMenu:
         :return: exec the update tool with the chosen id
         """
         options = {}
-        for item in self.tools.filter(Contract, ("commercial_id", self.user_id)):
-            options["Contrat "+str(item[0].id)] = item[0].id
-        choice = self.prompt.return_menu(options)
-        self.contract_tools.update(choice)
+        if self.tools.list(Contract):
+            for item in self.tools.filter(Contract, ("commercial_id", self.user_id)):
+                options["Contrat "+str(item[0].id)] = item[0].id
+            choice = self.prompt.return_menu(options)
+            self.contract_tools.update(choice)
+
 
     def contract_menu(self):
         """
@@ -226,17 +230,24 @@ class ManagementMenu:
          commercial_options,
          event_options) = {},{},{},{}
         commercial = self.collaborator_tools.get_by_team_id(1)
-        for customer in self.tools.list(Customer):
-            customer_options[customer[0].name] = customer[0].id
-        for user in commercial:
-            commercial_options[user[0].name] = user[0].id
-        for event in self.tools.list(Event):
-            event_options[event[0].name] = event[0].id
-        for item in self.tools.list(Contract):
-            options["Contrat "+str(item[0].id)] = item[0].id
+        if self.tools.list(Customer):
+            for customer in self.tools.list(Customer):
+                customer_options[customer[0].name] = customer[0].id
+        if self.tools.list(Collaborator):
+            for user in commercial:
+                commercial_options[user[0].name] = user[0].id
+        if self.tools.list(Event):
+            for event in self.tools.list(Event):
+                event_options[event[0].name] = event[0].id
+        if self.tools.list(Contract):
+            for item in self.tools.list(Contract):
+                options["Contrat "+str(item[0].id)] = item[0].id
         choice = self.prompt.return_menu(options)
-        self.contract_tools.update(choice, customer_options,
-                                   commercial_options, event_options)
+        if choice:
+            self.contract_tools.update(choice, customer_options,
+                                       commercial_options, event_options)
+        else:
+            return None
 
     def contract_to_create(self):
         (customer_options,
@@ -270,13 +281,18 @@ class ManagementMenu:
         """
         options = {}
         support_options = {}
-        support = self.collaborator_tools.get_by_team_id(3)
-        for user in support:
-            support_options[user[0].name] = user[0].id
-        for item in self.tools.list(Event):
-            options[item[0].name] = item[0].id
+        if self.tools.list(Collaborator):
+            support = self.collaborator_tools.get_by_team_id(3)
+            for user in support:
+                support_options[user[0].name] = user[0].id
+        if self.tools.list(Event):
+            for item in self.tools.list(Event):
+                options[item[0].name] = item[0].id
         choice = self.prompt.return_menu(options)
-        self.event_tools.update(choice, support_options)
+        if choice:
+            self.event_tools.update(choice, support_options)
+        else:
+            return None
 
     def event_list(self):
         event_list_options = {
