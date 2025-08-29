@@ -96,8 +96,8 @@ class Contract(Base):
     signed: Mapped[bool] = mapped_column(Boolean, default=False)
     # creation_date: Mapped[date] = mapped_column(Date,
     #                                             server_default=func.now())
-    creation_date: Mapped[date] = mapped_column(Date,
-                                                server_default=func.now())
+    creation_date: Mapped[date] = mapped_column(DateTime,
+                                                default=datetime.now())
     amount: Mapped[int] = mapped_column(Integer)
     customer_id: Mapped[Optional[int]] = mapped_column(
         ForeignKey("customer.id",
