@@ -12,6 +12,11 @@ SessionLocal = sessionmaker(bind=engine)
 cust1 = ("Cust1", "aa", 11, "Cust1CO")
 cust2 = ("Cust2", "bb", 22, "Cust2CO")
 
+HASH = ("$argon2id$v=19$m=65536,"
+        "t=3,p=4$rPX+v3cu5VxLCQF"
+        "gjHGOMQ$SDCcjb45n9kZTn95"
+        "KS98uS1HDah7up6Py6S9bqJnSGQ")
+
 @pytest.fixture
 def session():
     if not engine.url.get_backend_name() == "sqlite":
@@ -55,17 +60,17 @@ def seed(session):
     #     ]
     # )
     # session.commit()
-    # session.add_all(
-    #     [
-    #         Credentials(collaborator_id=1,
-    #                     password_hash=argon2.hash("test")),
-    #         Credentials(collaborator_id=2,
-    #                     password_hash=argon2.hash("test")),
-    #         Credentials(collaborator_id=3,
-    #                     password_hash=argon2.hash("test")),
-    #         Contract(signed=0, amount=200000, customer_id=1, commercial_id=1),
-    #     ]
-    # )
+    session.add_all(
+        [
+            Credentials(collaborator_id=1,
+                        password_hash=HASH),
+            Credentials(collaborator_id=2,
+                        password_hash=argon2.hash("test")),
+            Credentials(collaborator_id=3,
+                        password_hash=argon2.hash("test")),
+            Contract(signed=0, amount=200000, customer_id=1, commercial_id=1),
+        ]
+    )
     # session.commit()
     # session.add_all(
     #     [
