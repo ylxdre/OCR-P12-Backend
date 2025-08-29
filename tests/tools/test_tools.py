@@ -4,6 +4,7 @@ from sqlalchemy.util import monkeypatch_proxied_specials
 from models import Customer
 from tools import CustomerTools, CollaboratorTools
 
+
 class TestCustomerTools:
 
     def test_db_should_be_populated(self, seed, session):
@@ -44,16 +45,7 @@ class TestCollaboratorTools:
         assert reply == 1
         assert reply2 == 2
 
-class TestPasswordTools:
-
-    def test_should_retrieve_hashed_password_by_username(self, seed, session):
-        pass
-
-    def test_right_user_could_connect(self, seed, session):
-        pass
-
-    def test_wrong_password_should_fail(self, seed, session):
-        pass
-
-    def test_unknown_user_should_fail(self, seed, session):
-        pass
+    def test_should_reply_list(self, seed, session):
+        tool = CollaboratorTools(session)
+        reply = tool.list()
+        len(reply) == 4
