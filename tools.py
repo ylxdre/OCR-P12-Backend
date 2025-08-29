@@ -69,6 +69,7 @@ class CollaboratorTools:
     def list(self):
         result = self.db.execute(select(Collaborator)).all()
         self.view.display_results(result)
+        return result
 
     def create(self) -> None:
         """

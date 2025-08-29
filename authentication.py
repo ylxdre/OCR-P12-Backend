@@ -1,3 +1,5 @@
+from typing import Any
+
 from passlib.hash import argon2
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -20,7 +22,7 @@ class PasswordTools:
         """
         return argon2.hash(password)
 
-    def get_by_name(self, username: str):
+    def get_by_name(self, username: str) -> dict[str, str] | None | Any:
         """
         Get the collaborator's name and return password hash associated if
         existing
@@ -39,8 +41,11 @@ class PasswordTools:
 
     def check(self, username: str, password: str) -> bool:
         user = self.get_by_name(username)
-        user_pw = user.password_hash
-        return argon2.verify(password, user_pw)
+        if type(user) == dict:
+            return False
+        else:
+            user_pw = user.password_hash
+            return argon2.verify(password, user_pw)
 
 
 class TokenTools:

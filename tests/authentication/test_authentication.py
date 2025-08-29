@@ -27,5 +27,4 @@ class TestPasswordTool:
     def test_get_by_name_should_reply_right_hash(self, seed, session):
         tool = PasswordTools(session)
         result = tool.get_by_name("Col1")
-        hash = HASH
-        assert result.password_hash == hash
+        assert result.password_hash == HASH
