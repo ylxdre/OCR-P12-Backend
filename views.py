@@ -30,7 +30,6 @@ class View:
             data = input(f"New {item}'s value : ")
         return item, data
 
-
     def prompt_for_collaborator_team(self):
         options = {"Commercial": 1,
                    "Management": 2,
@@ -78,7 +77,9 @@ class View:
                    }
         return self.prompt_for_update(options)
 
-    def prompt_for_contract(self, customer_options, commercial_options) -> dict:
+    def prompt_for_contract(self,
+                            customer_options,
+                            commercial_options) -> dict:
         contract = {}
         print("** New contract **")
         print("Customer ? :")

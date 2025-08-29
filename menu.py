@@ -22,7 +22,6 @@ class Prompt:
         return None
 
 
-
 class CommercialMenu:
     """
     Main menu for commercial users displaying only specific submenus according
@@ -111,7 +110,6 @@ class CommercialMenu:
                 self.contract_tools.update(choice)
             else:
                 return None
-
 
     def contract_menu(self):
         """
@@ -238,7 +236,7 @@ class ManagementMenu:
         (options,
          customer_options,
          commercial_options,
-         event_options) = {},{},{},{}
+         event_options) = {}, {}, {}, {}
         commercial = self.collaborator_tools.get_by_team_id(1)
         if self.tools.list(Customer):
             for customer in self.tools.list(Customer):
@@ -261,8 +259,7 @@ class ManagementMenu:
 
     def contract_to_create(self):
         (customer_options,
-         commercial_options,
-         event_options) = {}, {}, {}
+         commercial_options) = {}, {}
         commercial = self.collaborator_tools.get_by_team_id(1)
         for customer in self.tools.list(Customer):
             customer_options[customer[0].name] = customer[0].id

@@ -3,9 +3,8 @@ from models import Collaborator, Customer, Contract, Event, Credentials
 from authentication import PasswordTools
 from views import View
 from sqlalchemy.orm import Session
-from sqlalchemy import text, select, update, insert, delete
-from datetime import datetime, date
-
+from sqlalchemy import select, update, insert, delete
+from datetime import datetime
 
 
 class Tools:
@@ -23,7 +22,7 @@ class Tools:
         :return: list of object
         """
         while self.db:
-            result =  self.db.execute(select(object)).all()
+            result = self.db.execute(select(object)).all()
             if result:
                 return result
             return None
@@ -36,11 +35,7 @@ class Tools:
         :return: list of selected object matching filter
         """
         item, value = filter
-        stmt = (select(object).where({item} == {value}))
-        print(stmt)
-        # while self.db:
-            # result = self.db.execute(
-            #     select(object).where(**{item: value})).all()
+        stmt = (select(object).where(**{item: value}))
         result = self.db.execute(stmt).all()
         if not result:
             self.view.display_error()
@@ -188,7 +183,6 @@ class CustomerTools:
         self.db.execute(stmt)
         self.db.commit()
         self.view.display_change(cust.name, item, value)
-
 
     def delete(self, my_id) -> None:
         """
