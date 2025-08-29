@@ -3,7 +3,7 @@ from models import Collaborator, Customer, Contract, Event, Credentials
 from authentication import PasswordTools
 from views import View
 from sqlalchemy.orm import Session
-from sqlalchemy import select, update, insert, delete
+from sqlalchemy import text, select, update, insert, delete
 from datetime import datetime, date
 
 
@@ -36,13 +36,15 @@ class Tools:
         :return: list of selected object matching filter
         """
         item, value = filter
-        stmt = (select(object).where(**{item: value}))
-        while self.db:
-            result = self.db.execute(
-                select(object).where(**{item: value})).all()
-            if not result:
-                self.view.display_error()
-            self.view.display_results(result)
+        stmt = (select(object).where({item} == {value}))
+        print(stmt)
+        # while self.db:
+            # result = self.db.execute(
+            #     select(object).where(**{item: value})).all()
+        result = self.db.execute(stmt).all()
+        if not result:
+            self.view.display_error()
+        self.view.display_results(result)
 
 
 class CollaboratorTools:
@@ -141,15 +143,6 @@ class CollaboratorTools:
             return ret
         else:
             return ret.team_id
-
-    def list_by_team_id(self, my_id):
-        pass
-
-    def list_by_contract_id(self, my_id):
-        pass
-
-    def list_by_event_id(self, my_id):
-        pass
 
 
 class CustomerTools:
@@ -309,6 +302,22 @@ class ContractTools:
         self.db.commit()
         self.view.display_change("Contract"+str(my_id), item, value)
 
+    def get_by_commercial_id(self, my_id):
+        """
+        Check if commercial exists, then returns a list
+        :param my_id: a commercial id
+        :return: a list of Customer
+        """
+        if self.db.get(Collaborator, my_id):
+            ret = self.db.execute(
+                select(Contract).where(Contract.commercial_id == my_id)).all()
+            if ret is None:
+                self.view.display_error()
+            return ret
+        else:
+            self.view.display_error()
+            return None
+
     def delete(self, my_id) -> None:
         """
         Delete a contract
@@ -397,6 +406,22 @@ class EventTools:
         self.db.execute(stmt)
         self.db.commit()
         self.view.display_change(event.name, item, value)
+
+    def get_by_support_id(self, my_id):
+        """
+        Check if commercial exists, then returns a list
+        :param my_id: a commercial id
+        :return: a list of Customer
+        """
+        if self.db.get(Event, my_id):
+            ret = self.db.execute(
+                select(Event).where(Event.support_id == my_id)).all()
+            if ret is None:
+                self.view.display_error()
+            return ret
+        else:
+            self.view.display_error()
+            return None
 
     def delete(self, my_id) -> None:
         """

@@ -64,7 +64,7 @@ class App:
 
         if team == 3:
             SupportMenu(self.customer_tools,
-                        self.contract_tools,    
+                        self.contract_tools,
                         self.event_tools,
                         self.tools,
                         user_id).launch()

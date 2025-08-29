@@ -67,11 +67,17 @@ class CommercialMenu:
         :return: exec the update tool with the chosen id
         """
         options = {}
-        for item in self.tools.filter(Customer,
-                                      ("commercial_id", self.user_id)):
-            options[item[0].name] = item[0].id
-        choice = self.prompt.return_menu(options)
-        self.customer_tools.update(choice)
+        if self.tools.list(Customer):
+            customers = self.customer_tools.get_by_commercial_id(self.user_id)
+            # customers =  self.tools.filter(Customer,
+            #                               ("commercial_id", self.user_id))
+            for item in customers:
+                options[item[0].name] = item[0].id
+            choice = self.prompt.return_menu(options)
+            if choice:
+                self.customer_tools.update(choice)
+            else:
+                return None
 
     def customer_to_create(self):
         self.customer_tools.create(self.user_id)
@@ -97,10 +103,14 @@ class CommercialMenu:
         """
         options = {}
         if self.tools.list(Contract):
-            for item in self.tools.filter(Contract, ("commercial_id", self.user_id)):
-                options["Contrat "+str(item[0].id)] = item[0].id
+            contracts = self.contract_tools.get_by_commercial_id(self.user_id)
+            for item in contracts:
+                options[item[0].name] = item[0].id
             choice = self.prompt.return_menu(options)
-            self.contract_tools.update(choice)
+            if choice:
+                self.contract_tools.update(choice)
+            else:
+                return None
 
 
     def contract_menu(self):
@@ -373,10 +383,15 @@ class SupportMenu:
 
     def event_for_update(self):
         options = {}
-        for item in self.tools.list(Event):
-            options[item[0].name] = item[0].id
-        choice = self.prompt.return_menu(options)
-        self.event_tools.update(choice)
+        if self.tools.list(Event):
+            events = self.event_tools.get_by_support_id(self.user_id)
+            for item in events:
+                options[item[0].name] = item[0].id
+            choice = self.prompt.return_menu(options)
+            if choice:
+                self.event_tools.update(choice)
+            else:
+                return None
 
 
 def menu(options):
