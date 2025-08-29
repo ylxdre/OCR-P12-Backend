@@ -14,7 +14,6 @@ def write_db(db, model):
 def clean_db():
     models.Base.metadata.drop_all(bind=engine)
 
-
 def init_test_db(db):
     # clean up everything before starting
     # models.Attendee.__table__.drop(engine)
@@ -35,10 +34,3 @@ def init_test_db(db):
             collaborator_id = man.id,
             password_hash = argon2.hash("password"))
     write_db(db, man_password)
-
-    # create an attendee
-    attendee = models.Attendee(name="Guest")
-    write_db(db, attendee)
-    # data = [com1, commercial_password, attendee]
-
-
